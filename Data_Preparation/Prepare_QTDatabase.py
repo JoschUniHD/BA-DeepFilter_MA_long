@@ -60,7 +60,7 @@ def prepare(QTpath='data/qt-database-1.0.0/'):
         annSamples = ann.sample
 
         # Obtaining P wave start positions
-        Anntype = np.array(anntype)
+        '''Anntype = np.array(anntype)
         idx = Anntype == 'p'
         Pidx = annSamples[idx]
         idxS = Anntype == '('
@@ -79,7 +79,7 @@ def prepare(QTpath='data/qt-database-1.0.0/'):
         Pstart = Sidx[ind]
 
         # Shift 40ms before P wave start
-        Pstart = Pstart - int(0.04*fields['fs'])
+        Pstart = Pstart - int(0.04*fields['fs'])'''
 
         # Extract first channel
         auxSig = signal[0:qu, 0]
@@ -88,10 +88,11 @@ def prepare(QTpath='data/qt-database-1.0.0/'):
         # Beats separation and removal of the vectors that contain more or equal than
         # two beats based on QRS annotations
         beats = list()
-        for k in range(len(Pstart)-1):
-            remove = (Ridx > Pstart[k]) & (Ridx < Pstart[k+1])
+        for k in range(int(qu/(fields['fs']*30))):
+            '''remove = (Ridx > Pstart[k]) & (Ridx < Pstart[k+1])
             if np.sum(remove) < 2:
-                beats.append(auxSig[Pstart[k]:Pstart[k+1]])
+                beats.append(auxSig[Pstart[k]:Pstart[k+1]])'''
+            beats.append(auxSig[k:(k+(fields['fs']*30))])
 
         # Creating the list that will contain each beat per signal
         beatsRe = list()
