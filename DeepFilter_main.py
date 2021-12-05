@@ -113,7 +113,7 @@ if __name__ == "__main__":
 
 
     ####### LOAD EXPERIMENTS #######
-
+    '''
     # Load timing
     with open('timing_nv1.pkl', 'rb') as input:
         timing_nv1 = pickle.load(input)
@@ -547,6 +547,6 @@ if __name__ == "__main__":
                          beat_no=None)
 
 
-
+    '''
 
 
