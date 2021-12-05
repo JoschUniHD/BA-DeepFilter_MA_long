@@ -38,7 +38,7 @@ def mad_loss(y_true, y_pred):
     return K.max(K.square(y_pred - y_true), axis=-2)
 
 
-def train_dl(Dataset, experiment, signal_size=512):
+def train_dl(Dataset, experiment, signal_size=10800):
 
     print('Deep Learning pipeline: Training the model for exp ' + str(experiment))
 
@@ -161,7 +161,7 @@ def train_dl(Dataset, experiment, signal_size=512):
 
 
 
-def test_dl(Dataset, experiment, signal_size=512):
+def test_dl(Dataset, experiment, signal_size=10800):
 
     print('Deep Learning pipeline: Testing the model')
 
