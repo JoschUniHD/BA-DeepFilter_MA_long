@@ -11,6 +11,8 @@
 
 import numpy as np
 import _pickle as pickle
+import wfdb
+from wfdb import processing
 from Data_Preparation import Prepare_QTDatabase, Prepare_NSTDB
 
 def Data_Preparation(noise_version=1):
@@ -108,8 +110,8 @@ def Data_Preparation(noise_version=1):
     # Creating the train and test dataset, each datapoint has 512 samples and is zero padded
     # beats bigger that 512 samples are discarded to avoid wrong split beats ans to reduce
     # computation.
-    skip_beats = 0
-    samples = 512
+    #skip_beats = 0
+    #samples = 512
     qtdb_keys = list(qtdb.keys())
 
     for i in range(len(qtdb_keys)):
@@ -117,8 +119,9 @@ def Data_Preparation(noise_version=1):
 
         for b in qtdb[signal_name]:
 
-            b_np = np.zeros(samples)
+            #b_np = np.zeros(samples)
             b_sq = np.array(b)
+            samples = len(b_sq)
 
             # There are beats with more than 512 samples (could be up to 3500 samples)
             # Creating a threshold of 512 - init_padding samples max. gives a good compromise between
@@ -128,17 +131,17 @@ def Data_Preparation(noise_version=1):
             # after:
             # train: 71893 test: 13306  (discarded train: ~4k datapoints test: ~50)
 
-            init_padding = 16
-            if b_sq.shape[0] > (samples - init_padding):
-                skip_beats += 1
-                continue
+            #init_padding = 16
+            #if b_sq.shape[0] > (samples - init_padding):
+                #skip_beats += 1
+                #continue
 
-            b_np[init_padding:b_sq.shape[0] + init_padding] = b_sq - (b_sq[0] + b_sq[-1]) / 2
+            #b_np[init_padding:b_sq.shape[0] + init_padding] = b_sq - (b_sq[0] + b_sq[-1]) / 2
 
             if signal_name in test_set:
-                beats_test.append(b_np)
+                beats_test.append(b_sq)
             else:
-                beats_train.append(b_np)
+                beats_train.append(b_sq)
 
 
     # Noise was added in a proportion from 0.2 to 2 times the ECG signal amplitude
@@ -151,15 +154,46 @@ def Data_Preparation(noise_version=1):
     sn_test = []
 
     noise_index = 0
+    
+    def noise_pw(noise):
+        n = []
+        noise_chunks = np.array_split(noise, 30)
+        chunks_mean = np.mean(noise_chunks, 1)
+        for i in range(len(chunks_mean)):
+            n_i = np.sqrt(np.mean((noise_chunks[i]-chunks_mean[i])**2))
+            n.append(n_i)
+        n.sort()
+        n_cut = n[2:-2]
+        return(np.mean(n_cut)**2)
+    
+    def signal_pw(signal):
+        qrs_inds = processing.xqrs_detect(signal, 360, verbose=False)
+        step = round(0.05 * 360)
+        if qrs_inds[0] < step:
+            qrs_inds = np.delete(qrs_inds, 0)
+        range_set = []
+        for qrs in qrs_inds:
+            window = signal[qrs-step : qrs+step]
+            # 2. Determining the range of each window
+            range_i = max(window) - min(window)
+            range_set.append(range_i)
+        # 3. Discarding the largest and smallest 2 of the measurements
+        range_set.sort()
+        range_set_cut = range_set[2:-2]
+        # 4. Mean QRS peak-to-peak
+        qrs_ptp = np.mean(range_set_cut)
+        # 5. Calulate power from peak-to-peak as for sinusoids
+        return(qrs_ptp ** 2 / 8)
 
     # Adding noise to train
-    rnd_train = np.random.randint(low=20, high=200, size=len(beats_train)) / 100
+    rnd_train = np.random.randint(low=-300, high=700, size=len(beats_train)) / 100
     for i in range(len(beats_train)):
         noise = noise_train[noise_index:noise_index + samples]
-        beat_max_value = np.max(beats_train[i]) - np.min(beats_train[i])
-        noise_max_value = np.max(noise) - np.min(noise)
-        Ase = noise_max_value / beat_max_value
-        alpha = rnd_train[i] / Ase
+        #beat_max_value = np.max(beats_train[i]) - np.min(beats_train[i])
+        #noise_max_value = np.max(noise) - np.min(noise)
+        #Ase = noise_max_value / beat_max_value
+        #alpha = rnd_train[i] / Ase
+        alpha = np.sqrt(10 ** (-rnd_train[i] / 10) * signal_pw(beats_train[i]) / noise_pw(noise))
         signal_noise = beats_train[i] + alpha * noise
         sn_train.append(signal_noise)
         noise_index += samples
@@ -169,7 +203,7 @@ def Data_Preparation(noise_version=1):
 
     # Adding noise to test
     noise_index = 0
-    rnd_test = np.random.randint(low=20, high=200, size=len(beats_test)) / 100
+    rnd_test = np.random.randint(low=-300, high=700, size=len(beats_test)) / 100
 
     # Saving the random array so we can use it on the amplitude segmentation tables
     np.save('rnd_test.npy', rnd_test)
@@ -177,10 +211,11 @@ def Data_Preparation(noise_version=1):
 
     for i in range(len(beats_test)):
         noise = noise_test[noise_index:noise_index + samples]
-        beat_max_value = np.max(beats_test[i]) - np.min(beats_test[i])
-        noise_max_value = np.max(noise) - np.min(noise)
-        Ase = noise_max_value / beat_max_value
-        alpha = rnd_test[i] / Ase
+        #beat_max_value = np.max(beats_test[i]) - np.min(beats_test[i])
+        #noise_max_value = np.max(noise) - np.min(noise)
+        #Ase = noise_max_value / beat_max_value
+        #alpha = rnd_test[i] / Ase
+        alpha = np.sqrt(10 ** (-rnd_test[i] / 10) * signal_pw(beats_test[i]) / noise_pw(noise))
         signal_noise = beats_test[i] + alpha * noise
         sn_test.append(signal_noise)
         noise_index += samples
