@@ -399,7 +399,7 @@ def FCN_DAE(signal_size=10800):
     input = Input(shape=input_shape)
 
     x = Conv1D(filters=40,
-               input_shape=(512, 1),
+               input_shape=(10800, 1),
                kernel_size=16,
                activation='elu',
                strides=2,
