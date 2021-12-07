@@ -158,7 +158,10 @@ def Data_Preparation(noise_version=1):
     def noise_pw(noise):
         n = []
         noise_chunks = np.array_split(noise, 23)
-        chunks_mean = np.mean(noise_chunks, 1)
+        chunks_mean = []
+        for i in noise_chunks:
+            mean = np.mean(i)
+            chunks_mean.append(mean)
         for i in range(len(chunks_mean)):
             n_i = np.sqrt(np.mean((noise_chunks[i]-chunks_mean[i])**2))
             n.append(n_i)
