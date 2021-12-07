@@ -88,11 +88,11 @@ def prepare(QTpath='data/qt-database-1.0.0/'):
         # Beats separation and removal of the vectors that contain more or equal than
         # two beats based on QRS annotations
         beats = list()
-        for k in range(int(qu/(fields['fs']*30))):
+        for k in range(int(qu/(fields['fs']*23))):
             '''remove = (Ridx > Pstart[k]) & (Ridx < Pstart[k+1])
             if np.sum(remove) < 2:
                 beats.append(auxSig[Pstart[k]:Pstart[k+1]])'''
-            beats.append(auxSig[k:(k+(fields['fs']*30))])
+            beats.append(auxSig[k:(k+(fields['fs']*23))])
 
         # Creating the list that will contain each beat per signal
         beatsRe = list()
@@ -106,6 +106,7 @@ def prepare(QTpath='data/qt-database-1.0.0/'):
             # resample beat by beat and saving it
             res = resample_poly(normBeat, newFs, fields['fs'])
             res = res[L-1:2*L-1]
+            res = res[44:-44]
             beatsRe.append(res)
 
         # storing all beats in each corresponding signal, list of list
