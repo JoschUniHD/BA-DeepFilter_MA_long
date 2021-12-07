@@ -186,7 +186,7 @@ def LANLFilter_module_dilated(x, layers):
 
 ###### MODELS #######
 
-def deep_filter_vanilla_linear(signal_size=10800):  # signal_size=None to use any size input
+def deep_filter_vanilla_linear(signal_size=8192):  # signal_size=None to use any size input
 
     model = Sequential()
 
@@ -235,7 +235,7 @@ def deep_filter_vanilla_linear(signal_size=10800):  # signal_size=None to use an
     return model
 
 
-def deep_filter_vanilla_Nlinear(signal_size=10800):
+def deep_filter_vanilla_Nlinear(signal_size=8192):
     model = Sequential()
 
     model.add(Conv1D(filters=64,
@@ -283,7 +283,7 @@ def deep_filter_vanilla_Nlinear(signal_size=10800):
     return model
 
 
-def deep_filter_I_linear(signal_size=10800):
+def deep_filter_I_linear(signal_size=8192):
     input_shape = (signal_size, 1)
     input = Input(shape=input_shape)
 
@@ -304,7 +304,7 @@ def deep_filter_I_linear(signal_size=10800):
     return model
 
 
-def deep_filter_I_Nlinear(signal_size=10800):
+def deep_filter_I_Nlinear(signal_size=8192):
     input_shape = (signal_size, 1)
     input = Input(shape=input_shape)
 
@@ -325,7 +325,7 @@ def deep_filter_I_Nlinear(signal_size=10800):
     return model
 
 
-def deep_filter_I_LANL(signal_size=10800):
+def deep_filter_I_LANL(signal_size=8192):
     # TODO: Make the doc
 
     input_shape = (signal_size, 1)
@@ -354,7 +354,7 @@ def deep_filter_I_LANL(signal_size=10800):
     return model
 
 
-def deep_filter_model_I_LANL_dilated(signal_size=10800):
+def deep_filter_model_I_LANL_dilated(signal_size=8192):
     # TODO: Make the doc
 
     input_shape = (signal_size, 1)
@@ -389,7 +389,7 @@ def deep_filter_model_I_LANL_dilated(signal_size=10800):
     return model
 
 
-def FCN_DAE(signal_size=10800):
+def FCN_DAE(signal_size=8192):
     # Implementation of FCN_DAE approach presented in
     # Chiang, H. T., Hsieh, Y. Y., Fu, S. W., Hung, K. H., Tsao, Y., & Chien, S. Y. (2019).
     # Noise reduction in ECG signals using fully convolutional denoising autoencoders.
@@ -399,7 +399,7 @@ def FCN_DAE(signal_size=10800):
     input = Input(shape=input_shape)
 
     x = Conv1D(filters=40,
-               input_shape=(10800, 1),
+               input_shape=(8192, 1),
                kernel_size=16,
                activation='elu',
                strides=2,
@@ -514,7 +514,7 @@ def FCN_DAE(signal_size=10800):
     return model
 
 
-def DRRN_denoising(signal_size=10800):
+def DRRN_denoising(signal_size=8192):
     # Implementation of DRNN approach presented in
     # Antczak, K. (2018). Deep recurrent neural networks for ECG signal denoising.
     # arXiv preprint arXiv:1807.11551.
