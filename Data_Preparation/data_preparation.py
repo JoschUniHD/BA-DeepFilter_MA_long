@@ -189,7 +189,7 @@ def Data_Preparation(noise_version=1):
         return(qrs_ptp ** 2 / 8)
 
     # Adding noise to train
-    rnd_train = np.random.randint(low=-300, high=700, size=len(beats_train)) / 100
+    rnd_train = np.random.randint(low=0, high=80, size=len(beats_train)) / 4
     for i in range(len(beats_train)):
         noise = noise_train[noise_index:noise_index + samples]
         #beat_max_value = np.max(beats_train[i]) - np.min(beats_train[i])
@@ -206,7 +206,7 @@ def Data_Preparation(noise_version=1):
 
     # Adding noise to test
     noise_index = 0
-    rnd_test = np.random.randint(low=-300, high=700, size=len(beats_test)) / 100
+    rnd_test = np.random.randint(low=0, high=80, size=len(beats_test)) / 4
 
     # Saving the random array so we can use it on the amplitude segmentation tables
     np.save('rnd_test.npy', rnd_test)
