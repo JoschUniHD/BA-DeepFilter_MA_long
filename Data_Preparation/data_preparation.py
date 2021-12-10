@@ -46,10 +46,10 @@ def Data_Preparation(noise_version=1):
     ma_signals = np.array(ma_signals)
 
 
-    bw_noise_channel1_a = bw_signals[0:int(bw_signals.shape[0]/2), 0]
-    bw_noise_channel1_b = bw_signals[int(bw_signals.shape[0]/2):-1, 0]
-    bw_noise_channel2_a = bw_signals[0:int(bw_signals.shape[0]/2), 1]
-    bw_noise_channel2_b = bw_signals[int(bw_signals.shape[0]/2):-1, 1]
+    ma_noise_channel1_a = ma_signals[0:int(ma_signals.shape[0]/2), 0]
+    ma_noise_channel1_b = ma_signals[int(ma_signals.shape[0]/2):-1, 0]
+    ma_noise_channel2_a = ma_signals[0:int(ma_signals.shape[0]/2), 1]
+    ma_noise_channel2_b = ma_signals[int(ma_signals.shape[0]/2):-1, 1]
 
 
 
@@ -57,11 +57,11 @@ def Data_Preparation(noise_version=1):
     # Data split
     #####################################
     if noise_version == 1:
-        noise_test = bw_noise_channel2_b
-        noise_train = bw_noise_channel1_a
+        noise_test = ma_noise_channel2_b
+        noise_train = ma_noise_channel1_a
     elif noise_version == 2:
-        noise_test = bw_noise_channel1_b
-        noise_train = bw_noise_channel2_a
+        noise_test = ma_noise_channel1_b
+        noise_train = ma_noise_channel2_a
     else:
         raise Exception("Sorry, noise_version should be 0 or 1")
 
