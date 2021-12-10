@@ -17,7 +17,7 @@ from keras.layers import Dense, Conv1D, Flatten, Dropout, BatchNormalization,\
 
 import keras.backend as K
 
-def Conv1DTranspose(input_tensor, filters, kernel_size, strides=2, activation='relu', padding='valid'):
+def Conv1DTranspose(input_tensor, filters, kernel_size, strides=2, activation='relu', padding='same'):
     """
         https://stackoverflow.com/a/45788699
 
@@ -45,22 +45,22 @@ def LFilter_module(x, layers):
                  kernel_size=3,
                  activation='linear',
                  strides=1,
-                 padding='valid')(x)
+                 padding='same')(x)
     LB1 = Conv1D(filters=int(layers / 4),
                 kernel_size=5,
                 activation='linear',
                 strides=1,
-                padding='valid')(x)
+                padding='same')(x)
     LB2 = Conv1D(filters=int(layers / 4),
                 kernel_size=9,
                 activation='linear',
                 strides=1,
-                padding='valid')(x)
+                padding='same')(x)
     LB3 = Conv1D(filters=int(layers / 4),
                 kernel_size=15,
                 activation='linear',
                 strides=1,
-                padding='valid')(x)
+                padding='same')(x)
 
 
     x = concatenate([LB0, LB1, LB2, LB3])
@@ -74,22 +74,22 @@ def NLFilter_module(x, layers):
                   kernel_size=3,
                   activation='relu',
                   strides=1,
-                  padding='valid')(x)
+                  padding='same')(x)
     NLB1 = Conv1D(filters=int(layers / 4),
                 kernel_size=5,
                 activation='relu',
                 strides=1,
-                padding='valid')(x)
+                padding='same')(x)
     NLB2 = Conv1D(filters=int(layers / 4),
                 kernel_size=9,
                 activation='relu',
                 strides=1,
-                padding='valid')(x)
+                padding='same')(x)
     NLB3 = Conv1D(filters=int(layers / 4),
                 kernel_size=15,
                 activation='relu',
                 strides=1,
-                padding='valid')(x)
+                padding='same')(x)
 
 
     x = concatenate([NLB0, NLB1, NLB2, NLB3])
@@ -102,43 +102,43 @@ def LANLFilter_module(x, layers):
                  kernel_size=3,
                  activation='linear',
                  strides=1,
-                 padding='valid')(x)
+                 padding='same')(x)
     LB1 = Conv1D(filters=int(layers / 8),
                 kernel_size=5,
                 activation='linear',
                 strides=1,
-                padding='valid')(x)
+                padding='same')(x)
     LB2 = Conv1D(filters=int(layers / 8),
                 kernel_size=9,
                 activation='linear',
                 strides=1,
-                padding='valid')(x)
+                padding='same')(x)
     LB3 = Conv1D(filters=int(layers / 8),
                 kernel_size=15,
                 activation='linear',
                 strides=1,
-                padding='valid')(x)
+                padding='same')(x)
 
     NLB0 = Conv1D(filters=int(layers / 8),
                   kernel_size=3,
                   activation='relu',
                   strides=1,
-                  padding='valid')(x)
+                  padding='same')(x)
     NLB1 = Conv1D(filters=int(layers / 8),
                  kernel_size=5,
                  activation='relu',
                  strides=1,
-                 padding='valid')(x)
+                 padding='same')(x)
     NLB2 = Conv1D(filters=int(layers / 8),
                  kernel_size=9,
                  activation='relu',
                  strides=1,
-                 padding='valid')(x)
+                 padding='same')(x)
     NLB3 = Conv1D(filters=int(layers / 8),
                  kernel_size=15,
                  activation='relu',
                  strides=1,
-                 padding='valid')(x)
+                 padding='same')(x)
 
     x = concatenate([LB0, LB1, LB2, LB3, NLB0, NLB1, NLB2, NLB3])
 
@@ -150,33 +150,33 @@ def LANLFilter_module_dilated(x, layers):
                 kernel_size=5,
                 activation='linear',
                 dilation_rate=3,
-                padding='valid')(x)
+                padding='same')(x)
     LB2 = Conv1D(filters=int(layers / 6),
                 kernel_size=9,
                 activation='linear',
                 dilation_rate=3,
-                padding='valid')(x)
+                padding='same')(x)
     LB3 = Conv1D(filters=int(layers / 6),
                 kernel_size=15,
                 dilation_rate=3,
                 activation='linear',
-                padding='valid')(x)
+                padding='same')(x)
 
     NLB1 = Conv1D(filters=int(layers / 6),
                  kernel_size=5,
                  activation='relu',
                  dilation_rate=3,
-                 padding='valid')(x)
+                 padding='same')(x)
     NLB2 = Conv1D(filters=int(layers / 6),
                  kernel_size=9,
                  activation='relu',
                  dilation_rate=3,
-                 padding='valid')(x)
+                 padding='same')(x)
     NLB3 = Conv1D(filters=int(layers / 6),
                  kernel_size=15,
                  dilation_rate=3,
                  activation='relu',
-                 padding='valid')(x)
+                 padding='same')(x)
 
     x = concatenate([LB1, LB2, LB3, NLB1, NLB2, NLB3])
     # x = BatchNormalization()(x)
@@ -195,43 +195,43 @@ def deep_filter_vanilla_linear(signal_size=8192):  # signal_size=None to use any
                      activation='linear',
                      input_shape=(signal_size, 1),
                      strides=1,
-                     padding='valid'))
+                     padding='same'))
     model.add(Conv1D(filters=64,
                      kernel_size=9,
                      activation='linear',
                      strides=1,
-                     padding='valid'))
+                     padding='same'))
 
 
     model.add(Conv1D(filters=32,
                      kernel_size=9,
                      activation='linear',
                      strides=1,
-                     padding='valid'))
+                     padding='same'))
     model.add(Conv1D(filters=32,
                      kernel_size=9,
                      activation='linear',
                      strides=1,
-                     padding='valid'))
+                     padding='same'))
 
 
     model.add(Conv1D(filters=16,
                      kernel_size=9,
                      activation='linear',
                      strides=1,
-                     padding='valid'))
+                     padding='same'))
     model.add(Conv1D(filters=16,
                      kernel_size=9,
                      activation='linear',
                      strides=1,
-                     padding='valid'))
+                     padding='same'))
 
 
     model.add(Conv1D(filters=1,
                      kernel_size=9,
                      activation='linear',
                      strides=1,
-                     padding='valid'))
+                     padding='same'))
     return model
 
 
@@ -243,43 +243,43 @@ def deep_filter_vanilla_Nlinear(signal_size=8192):
                      activation='relu',
                      input_shape=(signal_size, 1),
                      strides=1,
-                     padding='valid'))
+                     padding='same'))
     model.add(Conv1D(filters=64,
                      kernel_size=9,
                      activation='relu',
                      strides=1,
-                     padding='valid'))
+                     padding='same'))
 
 
     model.add(Conv1D(filters=32,
                      kernel_size=9,
                      activation='relu',
                      strides=1,
-                     padding='valid'))
+                     padding='same'))
     model.add(Conv1D(filters=32,
                      kernel_size=9,
                      activation='relu',
                      strides=1,
-                     padding='valid'))
+                     padding='same'))
 
 
     model.add(Conv1D(filters=16,
                      kernel_size=9,
                      activation='relu',
                      strides=1,
-                     padding='valid'))
+                     padding='same'))
     model.add(Conv1D(filters=16,
                      kernel_size=9,
                      activation='relu',
                      strides=1,
-                     padding='valid'))
+                     padding='same'))
 
 
     model.add(Conv1D(filters=1,
                      kernel_size=9,
                      activation='linear',
                      strides=1,
-                     padding='valid'))
+                     padding='same'))
     return model
 
 
@@ -297,7 +297,7 @@ def deep_filter_I_linear(signal_size=8192):
                          kernel_size=9,
                          activation='linear',
                          strides=1,
-                         padding='valid')(tensor)
+                         padding='same')(tensor)
 
     model = Model(inputs=[input], outputs=predictions)
 
@@ -318,7 +318,7 @@ def deep_filter_I_Nlinear(signal_size=8192):
                          kernel_size=9,
                          activation='linear',
                          strides=1,
-                         padding='valid')(tensor)
+                         padding='same')(tensor)
 
     model = Model(inputs=[input], outputs=predictions)
 
@@ -347,7 +347,7 @@ def deep_filter_I_LANL(signal_size=8192):
                     kernel_size=9,
                     activation='linear',
                     strides=1,
-                    padding='valid')(tensor)
+                    padding='same')(tensor)
 
     model = Model(inputs=[input], outputs=predictions)
 
@@ -382,7 +382,7 @@ def deep_filter_model_I_LANL_dilated(signal_size=8192):
                     kernel_size=9,
                     activation='linear',
                     strides=1,
-                    padding='valid')(tensor)
+                    padding='same')(tensor)
 
     model = Model(inputs=[input], outputs=predictions)
 
@@ -403,7 +403,7 @@ def FCN_DAE(signal_size=8192):
                kernel_size=16,
                activation='elu',
                strides=2,
-               padding='valid')(input)
+               padding='same')(input)
 
     x = BatchNormalization()(x)
 
@@ -411,7 +411,7 @@ def FCN_DAE(signal_size=8192):
                kernel_size=16,
                activation='elu',
                strides=2,
-               padding='valid')(x)
+               padding='same')(x)
 
     x = BatchNormalization()(x)
 
@@ -419,7 +419,7 @@ def FCN_DAE(signal_size=8192):
                kernel_size=16,
                activation='elu',
                strides=2,
-               padding='valid')(x)
+               padding='same')(x)
 
     x = BatchNormalization()(x)
 
@@ -427,7 +427,7 @@ def FCN_DAE(signal_size=8192):
                kernel_size=16,
                activation='elu',
                strides=2,
-               padding='valid')(x)
+               padding='same')(x)
 
     x = BatchNormalization()(x)
 
@@ -435,7 +435,7 @@ def FCN_DAE(signal_size=8192):
                kernel_size=16,
                activation='elu',
                strides=2,
-               padding='valid')(x)
+               padding='same')(x)
 
     x = BatchNormalization()(x)
 
@@ -443,7 +443,7 @@ def FCN_DAE(signal_size=8192):
                kernel_size=16,
                activation='elu',
                strides=1,
-               padding='valid')(x)
+               padding='same')(x)
 
     x = BatchNormalization()(x)
 
@@ -454,7 +454,7 @@ def FCN_DAE(signal_size=8192):
                         kernel_size=16,
                         activation='elu',
                         strides=1,
-                        padding='valid')
+                        padding='same')
 
     x = BatchNormalization()(x)
 
@@ -463,7 +463,7 @@ def FCN_DAE(signal_size=8192):
                         kernel_size=16,
                         activation='elu',
                         strides=2,
-                        padding='valid')
+                        padding='same')
 
     x = BatchNormalization()(x)
 
@@ -472,7 +472,7 @@ def FCN_DAE(signal_size=8192):
                         kernel_size=16,
                         activation='elu',
                         strides=2,
-                        padding='valid')
+                        padding='same')
 
     x = BatchNormalization()(x)
 
@@ -481,7 +481,7 @@ def FCN_DAE(signal_size=8192):
                         kernel_size=16,
                         activation='elu',
                         strides=2,
-                        padding='valid')
+                        padding='same')
 
     x = BatchNormalization()(x)
 
@@ -490,7 +490,7 @@ def FCN_DAE(signal_size=8192):
                         kernel_size=16,
                         activation='elu',
                         strides=2,
-                        padding='valid')
+                        padding='same')
 
     x = BatchNormalization()(x)
 
@@ -499,7 +499,7 @@ def FCN_DAE(signal_size=8192):
                         kernel_size=16,
                         activation='elu',
                         strides=2,
-                        padding='valid')
+                        padding='same')
 
     x = BatchNormalization()(x)
 
@@ -508,7 +508,7 @@ def FCN_DAE(signal_size=8192):
                         kernel_size=16,
                         activation='linear',
                         strides=1,
-                        padding='valid')
+                        padding='same')
 
     model = Model(inputs=[input], outputs=predictions)
     return model
